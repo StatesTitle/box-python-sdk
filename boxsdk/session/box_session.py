@@ -394,10 +394,12 @@ class BoxSession(object):
         if auto_session_renewal and (access_token_will_be_used is None):
             access_token_will_be_used = self._renew_session(None)
             auto_session_renewal = False
+        custom_headers = headers
+        headers = self._default_headers.copy()
         authorization_header = {'Authorization': 'Bearer {0}'.format(access_token_will_be_used)}
-        if headers is None:
-            headers = self._default_headers.copy()
         headers.update(authorization_header)
+        if custom_headers:
+            headers.update(custom_headers)
 
         # Reset stream positions to what they were when the request was made so the same data is sent even if this
         # is a retried attempt.
